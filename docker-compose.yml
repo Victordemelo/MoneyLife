@@ -1,0 +1,33 @@
+services:
+  # Nosso contêiner da aplicação Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moneylife_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  # Nosso contêiner do banco de dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: moneylife_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: moneylife
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+# Volume para garantir que os dados do banco não sumam se o contêiner cair
+volumes:
+  db_data:
